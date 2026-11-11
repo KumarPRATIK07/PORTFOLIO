@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#130c24">
+  <meta name="description" content="A living, interactive 4K Jagannath wallpaper.">
+  <title>Jaya Jagannath — Living Wallpaper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --gold: #f2c56b;
+      --ivory: #f9edcf;
+      --muted: #b7a9c5;
+      --ink: #130c24;
+      --glass: #190f2bbd;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; margin: 0; }
+    body {
+      min-height: 100svh;
+      overflow: hidden;
+      background: #10091e;
+      color: var(--ivory);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font: inherit; }
+    .wallpaper {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+      min-height: 520px;
+      overflow: hidden;
+      isolation: isolate;
+      background: #130c24;
+    }
+    .artwork {
+      position: absolute;
+      inset: -2.5%;
+      width: 105%;
+      height: 105%;
+      object-fit: cover;
+      transition: filter .7s ease, transform .2s ease-out;
+      will-change: transform;
+    }
+    .artwork.is-still { transform: none !important; }
+    .vignette {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, #0d081950 0%, transparent 22%, transparent 70%, #0c0715b8 100%),
+        radial-gradient(ellipse at 50% 48%, transparent 34%, #0b071552 100%);
+    }
+    .topbar, .bottom-bar {
+      position: absolute;
+      z-index: 3;
+      right: clamp(20px, 5vw, 82px);
+      left: clamp(20px, 5vw, 82px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar { top: clamp(20px, 4vh, 42px); }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ivory);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid #e9bd7073;
+      border-radius: 50%;
+      color: var(--gold);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+    .top-actions, .control-group { display: flex; align-items: center; gap: 9px; }
+    .icon-button, .download-button {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid #f1d89c3b;
+      border-radius: 999px;
+      background: #160e29ad;
+      color: var(--ivory);
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+      transition: background .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .icon-button { width: 42px; padding: 0; }
+    .download-button { padding: 0 17px; color: #271831; background: var(--gold); border-color: var(--gold); font-size: 11px; font-weight: 700; }
+    .icon-button:hover, .download-button:hover { transform: translateY(-2px); border-color: var(--gold); }
+    .icon-button:hover { background: #49304c; }
+    .download-button:hover { background: #ffda8b; }
+    .icon-button svg, .download-button svg { width: 17px; height: 17px; }
+    .center-copy {
+      position: absolute;
+      z-index: 2;
+      top: 12.5%;
+      left: 50%;
+      width: min(94%, 690px);
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 2px 24px #10071980;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: #edcc8c;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before, .eyebrow::after { width: 25px; height: 1px; background: #dfb86e80; content: ""; }
+    h1 {
+      margin: 13px 0 4px;
+      color: #fff3d4;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(35px, 5.2vw, 72px);
+      font-weight: 500;
+      letter-spacing: .12em;
+      line-height: .96;
+      text-indent: .12em;
+    }
+    .subheading { margin: 12px 0 0; color: #e6d9c5c7; font-size: 10px; letter-spacing: .19em; }
+    .bottom-bar { bottom: clamp(20px, 4.5vh, 48px); align-items: end; }
+    .caption { max-width: 240px; color: #e7dcc8; }
+    .caption-kicker { margin: 0 0 7px; color: var(--gold); font-size: 9px; font-weight: 600; letter-spacing: .23em; text-transform: uppercase; }
+    .caption p:last-child { margin: 0; color: #d3c8d8; font-family: "Cormorant Garamond", Georgia, serif; font-size: 20px; font-style: italic; }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 7px;
+      border: 1px solid #f1d89c30;
+      border-radius: 999px;
+      background: var(--glass);
+      box-shadow: 0 14px 45px #09051155;
+      backdrop-filter: blur(18px);
+    }
+    .control-label { padding-left: 9px; color: #c8b9cf; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+    .control-divider { width: 1px; height: 20px; background: #f1d89c30; }
+    .toggle-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 11px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #f1e7d6;
+      cursor: pointer;
+      font-size: 10px;
+      transition: background .2s ease, color .2s ease;
+    }
+    .toggle-button:hover, .toggle-button[aria-pressed="true"] { background: #ffffff13; color: var(--gold); }
+    .toggle-button svg { width: 15px; height: 15px; }
+    .toast {
+      position: absolute;
+      z-index: 5;
+      right: 50%;
+      bottom: 98px;
+      max-width: calc(100vw - 32px);
+      padding: 11px 16px;
+      transform: translate(50%, 10px);
+      border: 1px solid #f2c56b55;
+      border-radius: 999px;
+      background: #190f2bed;
+      color: #f9edcf;
+      font-size: 11px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+      backdrop-filter: blur(12px);
+    }
+    .toast.show { transform: translate(50%, 0); opacity: 1; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    @media (max-width: 700px) {
+      .wallpaper { min-height: 480px; }
+      .artwork { inset: -1%; width: 102%; height: 102%; object-position: 50% 50%; }
+      .topbar, .bottom-bar { right: 18px; left: 18px; }
+      .topbar { top: 18px; }
+      .brand { gap: 8px; font-size: 8px; letter-spacing: .14em; }
+      .brand-mark { width: 34px; height: 34px; }
+      .icon-button { width: 38px; min-height: 38px; }
+      .download-button { width: 40px; min-height: 38px; padding: 0; }
+      .download-button span { display: none; }
+      .center-copy { top: 13%; }
+      h1 { font-size: clamp(33px, 8vw, 52px); }
+      .eyebrow { font-size: 8px; letter-spacing: .2em; }
+      .subheading { font-size: 8px; letter-spacing: .1em; }
+      .bottom-bar { bottom: 20px; flex-direction: column; align-items: center; gap: 14px; }
+      .caption { display: none; }
+      .controls { gap: 5px; }
+      .control-label { font-size: 8px; }
+      .toggle-button { gap: 6px; padding-inline: 9px; font-size: 9px; }
+      .toast { bottom: 81px; }
+    }
+    @media (max-height: 600px) and (min-width: 701px) {
+      .center-copy { top: 8%; }
+      h1 { font-size: clamp(35px, 5vh, 52px); }
+      .bottom-bar { bottom: 17px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wallpaper" aria-label="Interactive Jagannath wallpaper">
+    <svg class="artwork" id="wallpaperArt" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="artTitle artDescription" xmlns="http://www.w3.org/2000/svg">
+      <title id="artTitle">Jaya Jagannath, Lord of the Universe</title>
+      <desc id="artDescription">A luminous, hand-drawn-style devotional artwork of Jagannath with Balabhadra and Subhadra, framed by an ornate golden temple arch beneath a starry indigo sky.</desc>
+      <defs>
+        <linearGradient id="sky" x2="0" y2="1">
+          <stop stop-color="#110b27"/>
+          <stop offset=".54" stop-color="#241339"/>
+          <stop offset="1" stop-color="#451b40"/>
+        </linearGradient>
+        <radialGradient id="halo">
+          <stop stop-color="#f8d38b" stop-opacity=".32"/>
+          <stop offset=".53" stop-color="#d88764" stop-opacity=".11"/>
+          <stop offset="1" stop-color="#c05f79" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="sun">
+          <stop stop-color="#ffe8aa"/>
+          <stop offset=".63" stop-color="#e7ad62"/>
+          <stop offset="1" stop-color="#bb6e54"/>
+        </radialGradient>
+        <linearGradient id="gold" x2="0" y2="1">
+          <stop stop-color="#fff0b5"/>
+          <stop offset=".38" stop-color="#e9b75e"/>
+          <stop offset=".72" stop-color="#bd7839"/>
+          <stop offset="1" stop-color="#f2d18a"/>
+        </linearGradient>
+        <linearGradient id="cloth" x2="0" y2="1">
+          <stop stop-color="#e3473c"/>
+          <stop offset="1" stop-color="#9f213c"/>
+        </linearGradient>
+        <linearGradient id="blueCloth" x2="0" y2="1">
+          <stop stop-color="#4f79c9"/>
+          <stop offset="1" stop-color="#283d86"/>
+        </linearGradient>
+        <linearGradient id="yellowCloth" x2="0" y2="1">
+          <stop stop-color="#ffd765"/>
+          <stop offset="1" stop-color="#d88a32"/>
+        </linearGradient>
+        <radialGradient id="jagannathFace">
+          <stop stop-color="#27314b"/>
+          <stop offset=".82" stop-color="#111523"/>
+          <stop offset="1" stop-color="#080c18"/>
+        </radialGradient>
+        <radialGradient id="balabhadraFace">
+          <stop stop-color="#fff4d8"/>
+          <stop offset=".84" stop-color="#f1dfbb"/>
+          <stop offset="1" stop-color="#d0a978"/>
+        </radialGradient>
+        <radialGradient id="subhadraFace">
+          <stop stop-color="#ffeb7a"/>
+          <stop offset=".83" stop-color="#ebaa3e"/>
+          <stop offset="1" stop-color="#bd6937"/>
+        </radialGradient>
+        <pattern id="starPattern" width="270" height="230" patternUnits="userSpaceOnUse">
+          <circle cx="23" cy="31" r="2" fill="#fff0c8" opacity=".8"/>
+          <circle cx="173" cy="67" r="1.5" fill="#f3cf83" opacity=".65"/>
+          <circle cx="103" cy="182" r="1.8" fill="#fff6dc" opacity=".55"/>
+          <path d="M225 168v12m-6-6h12" stroke="#f3cf83" stroke-width="1.5" opacity=".65"/>
+        </pattern>
+        <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="30"/>
+        </filter>
+        <filter id="shadow" x="-40%" y="-30%" width="180%" height="180%">
+          <feDropShadow dx="0" dy="30" stdDeviation="35" flood-color="#080613" flood-opacity=".5"/>
+        </filter>
+        <g id="lotus">
+          <path d="M0 75C-112 9-105-74-58-96C-24-64-10-12 0 75Z" fill="#c74a61"/>
+          <path d="M0 75C112 9 105-74 58-96C24-64 10-12 0 75Z" fill="#e17172"/>
+          <path d="M0 75C-62 0-46-101 0-126C46-101 62 0 0 75Z" fill="#f1a17f"/>
+          <path d="M0 72V-86" stroke="#ffd99b" stroke-width="5" opacity=".76"/>
+        </g>
+        <g id="eye">
+          <ellipse rx="104" ry="115" fill="#fff9e9"/>
+          <ellipse rx="61" ry="75" fill="#d53e42"/>
+          <ellipse cy="5" rx="38" ry="54" fill="#080b13"/>
+          <circle cx="-13" cy="-19" r="12" fill="#fff8e4"/>
+          <circle cx="16" cy="22" r="6" fill="#fff8e4" opacity=".8"/>
+        </g>
+        <g id="littleEye">
+          <ellipse rx="67" ry="88" fill="#fff4db"/>
+          <ellipse rx="40" ry="57" fill="#c83441"/>
+          <ellipse cy="5" rx="24" ry="39" fill="#111323"/>
+          <circle cx="-9" cy="-14" r="8" fill="#fff8e4"/>
+        </g>
+      </defs>
+
+      <rect width="3840" height="2160" fill="url(#sky)"/>
+      <rect width="3840" height="1160" fill="url(#starPattern)" opacity=".8"/>
+      <ellipse cx="1920" cy="930" rx="1280" ry="820" fill="url(#halo)"/>
+      <g fill="#f9df9e" opacity=".54">
+        <circle cx="545" cy="390" r="5"/><circle cx="879" cy="580" r="4"/>
+        <circle cx="1240" cy="300" r="5"/><circle cx="1675" cy="510" r="4"/>
+        <circle cx="2238" cy="333" r="5"/><circle cx="2681" cy="570" r="4"/>
+        <circle cx="3144" cy="360" r="5"/><circle cx="3455" cy="640" r="4"/>
+      </g>
+      <g fill="#f7d88e" opacity=".35">
+        <path d="M550 365v50m-25-25h50M1240 272v56m-28-28h56M3144 332v56m-28-28h56"/>
+      </g>
+
+      <g id="mandala" transform="translate(0 210)">
+        <circle cx="1920" cy="900" r="720" fill="url(#sun)" opacity=".085"/>
+        <circle cx="1920" cy="900" r="628" fill="none" stroke="#edc475" stroke-width="4" opacity=".34"/>
+        <circle cx="1920" cy="900" r="590" fill="none" stroke="#f4d18c" stroke-width="2" stroke-dasharray="2 24" opacity=".65"/>
+        <circle cx="1920" cy="900" r="508" fill="none" stroke="#f5d690" stroke-width="3" opacity=".33"/>
+        <g fill="none" stroke="#e9bd73" stroke-width="9" opacity=".3">
+          <path d="M1920 143C2055 404 2055 1396 1920 1657C1785 1396 1785 404 1920 143Z"/>
+          <path d="M1163 900C1424 765 2416 765 2677 900C2416 1035 1424 1035 1163 900Z"/>
+          <path d="M1384 364C1630 483 2319 1172 2438 1418C2192 1299 1503 610 1384 364Z"/>
+          <path d="M2456 364C2337 610 1648 1299 1402 1418C1521 1172 2210 483 2456 364Z"/>
+        </g>
+        <g fill="#f6d79a" opacity=".72">
+          <circle cx="1920" cy="286" r="10"/><circle cx="1920" cy="1514" r="10"/>
+          <circle cx="1306" cy="900" r="10"/><circle cx="2534" cy="900" r="10"/>
+        </g>
+      </g>
+
+      <g id="temple" opacity=".87" transform="translate(0 210)">
+        <path d="M180 2160V870Q180 755 300 755H580Q700 755 700 870V2160" fill="#1a102a" stroke="url(#gold)" stroke-width="20"/>
+        <path d="M3140 2160V870Q3140 755 3260 755H3540Q3660 755 3660 870V2160" fill="#1a102a" stroke="url(#gold)" stroke-width="20"/>
+        <path d="M80 845H800M3040 845H3760" stroke="url(#gold)" stroke-width="25"/>
+        <path d="M100 820L440 675L780 820M3060 820L3400 675L3740 820" fill="#2a1734" stroke="url(#gold)" stroke-width="18"/>
+        <g fill="#eac77f">
+          <path d="M260 1180h340v25H260zM260 1435h340v25H260zM3220 1180h340v25h-340zM3220 1435h340v25h-340z"/>
+          <circle cx="440" cy="1082" r="25"/><circle cx="3400" cy="1082" r="25"/>
+          <circle cx="440" cy="1327" r="25"/><circle cx="3400" cy="1327" r="25"/>
+        </g>
+      </g>
+
+      <g id="garland" fill="none" stroke="#d7a747" stroke-width="20" opacity=".8" transform="translate(0 210)">
+        <path d="M730 525C1050 830 1270 870 1540 700C1710 590 1770 480 1920 480C2070 480 2130 590 2300 700C2570 870 2790 830 3110 525"/>
+        <path d="M790 540C1080 800 1280 835 1545 670M3050 540C2760 800 2560 835 2295 670" stroke="#f3d089" stroke-width="7"/>
+      </g>
+      <g fill="#e84f5b">
+        <circle cx="850" cy="634" r="20"/><circle cx="1040" cy="765" r="19"/><circle cx="1275" cy="804" r="18"/>
+        <circle cx="2990" cy="634" r="20"/><circle cx="2800" cy="765" r="19"/><circle cx="2565" cy="804" r="18"/>
+      </g>
+      <g fill="#ffd46f">
+        <path d="M1640 640l22 40 45 4-33 30 9 44-43-22-40 22 8-44-33-30 45-4z"/>
+        <path d="M2160 640l22 40 45 4-33 30 9 44-43-22-40 22 8-44-33-30 45-4z"/>
+      </g>
+
+      <g id="deities" filter="url(#shadow)" transform="translate(0 210)">
+        <g id="balabhadra" transform="translate(1265 920)">
+          <ellipse cy="525" rx="268" ry="56" fill="#0b0816" opacity=".42"/>
+          <path d="M-205 270Q-245 400-210 614L0 692L210 614Q245 400 205 270Z" fill="url(#blueCloth)" stroke="url(#gold)" stroke-width="20"/>
+          <path d="M-180 330Q0 405 180 330M-191 490Q0 555 191 490" fill="none" stroke="#f4d38b" stroke-width="12" opacity=".72"/>
+          <path d="M-202 606L-150 655L-98 614L-45 666L8 615L66 666L119 612L170 653L212 604" fill="none" stroke="url(#gold)" stroke-width="18"/>
+          <path d="M-164 184Q-216 112-174 4L-112-87L0-127L112-87L174 4Q216 112 164 184Z" fill="url(#balabhadraFace)" stroke="url(#gold)" stroke-width="20"/>
+          <path d="M-143-47Q0-140 143-47L102-124L0-174L-102-124Z" fill="#f3e7d0" stroke="url(#gold)" stroke-width="20"/>
+          <path d="M-124-104L0-190L124-104" fill="none" stroke="#dd4851" stroke-width="20"/>
+          <path d="M-154-165L0-263L154-165L127-128H-127Z" fill="url(#gold)" stroke="#ffedbd" stroke-width="12"/>
+          <circle cy="-202" r="19" fill="#e44851" stroke="#ffdc8d" stroke-width="8"/>
+          <path d="M-145 30Q-96-3-47 30M47 30Q96-3 145 30" fill="none" stroke="#722d36" stroke-width="11" stroke-linecap="round"/>
+          <use href="#littleEye" x="-92" y="60"/>
+          <use href="#littleEye" x="92" y="60"/>
+          <path d="M-35 142Q0 159 35 142" fill="none" stroke="#a53b41" stroke-width="10" stroke-linecap="round"/>
+          <path d="M-201 208Q-256 330-203 461M201 208Q256 330 203 461" fill="none" stroke="#f0c56f" stroke-width="20"/>
+          <circle cy="245" r="19" fill="#edc574"/><circle cy="300" r="15" fill="#edc574"/>
+        </g>
+
+        <g id="subhadra" transform="translate(2575 1010)">
+          <ellipse cy="430" rx="220" ry="48" fill="#0b0816" opacity=".42"/>
+          <path d="M-172 220Q-205 345-174 535L0 600L174 535Q205 345 172 220Z" fill="url(#yellowCloth)" stroke="url(#gold)" stroke-width="18"/>
+          <path d="M-155 320Q0 375 155 320M-162 455Q0 504 162 455" fill="none" stroke="#fff0b0" stroke-width="11" opacity=".8"/>
+          <path d="M-164 534L-120 578L-75 543L-25 587L20 542L68 584L115 540L166 575" fill="none" stroke="#fff0b0" stroke-width="16"/>
+          <path d="M-142 145Q-186 75-150-10L-90-88L0-116L90-88L150-10Q186 75 142 145Z" fill="url(#subhadraFace)" stroke="url(#gold)" stroke-width="18"/>
+          <path d="M-118-66Q0-135 118-66L86-126L0-167L-86-126Z" fill="#e9a43e" stroke="url(#gold)" stroke-width="16"/>
+          <path d="M-124-151L0-223L124-151L99-117H-99Z" fill="url(#gold)" stroke="#ffedbd" stroke-width="10"/>
+          <circle cy="-180" r="15" fill="#ed4850" stroke="#ffdc8d" stroke-width="7"/>
+          <path d="M-124 15Q-80-9-38 15M38 15Q80-9 124 15" fill="none" stroke="#8c3d35" stroke-width="10" stroke-linecap="round"/>
+          <use href="#littleEye" x="-72" y="47"/>
+          <use href="#littleEye" x="72" y="47"/>
+          <path d="M-29 111Q0 124 29 111" fill="none" stroke="#a53b41" stroke-width="9" stroke-linecap="round"/>
+          <path d="M-158 184Q-202 282-158 389M158 184Q202 282 158 389" fill="none" stroke="#ffdc78" stroke-width="17"/>
+          <circle cy="211" r="16" fill="#ed4250"/><circle cy="263" r="13" fill="#ed4250"/>
+        </g>
+
+        <g id="jagannath" transform="translate(1920 810)">
+          <ellipse cy="700" rx="355" ry="72" fill="#0b0816" opacity=".45"/>
+          <path d="M-282 300Q-335 460-286 730L0 830L286 730Q335 460 282 300Z" fill="url(#cloth)" stroke="url(#gold)" stroke-width="25"/>
+          <path d="M-250 391Q0 480 250 391M-268 566Q0 664 268 566" fill="none" stroke="#ffce76" stroke-width="15" opacity=".9"/>
+          <path d="M-281 719L-211 786L-142 727L-70 799L0 730L75 799L147 727L219 785L285 714" fill="none" stroke="#f4d18a" stroke-width="22"/>
+          <path d="M-242 208Q-300 102-249-18L-158-115L0-155L158-115L249-18Q300 102 242 208Z" fill="url(#jagannathFace)" stroke="url(#gold)" stroke-width="25"/>
+          <path d="M-205-80Q0-191 205-80L150-168L0-232L-150-168Z" fill="#171c2d" stroke="url(#gold)" stroke-width="22"/>
+          <path d="M-210-204L0-324L210-204L170-158H-170Z" fill="url(#gold)" stroke="#ffedbd" stroke-width="15"/>
+          <circle cy="-260" r="27" fill="#e54752" stroke="#ffe2a0" stroke-width="10"/>
+          <path d="M-221 7Q-154-39-85 7M85 7Q154-39 221 7" fill="none" stroke="#080b15" stroke-width="18" stroke-linecap="round"/>
+          <use href="#eye" x="-130" y="62"/>
+          <use href="#eye" x="130" y="62"/>
+          <path d="M-55 162Q0 196 55 162" fill="none" stroke="#e54a50" stroke-width="16" stroke-linecap="round"/>
+          <path d="M-296 246Q-364 407-293 572M296 246Q364 407 293 572" fill="none" stroke="#f2c56b" stroke-width="27"/>
+          <circle cy="278" r="25" fill="#f0c66d"/><circle cy="352" r="19" fill="#f0c66d"/>
+          <path d="M-100 244Q0 287 100 244" fill="none" stroke="#f5d28b" stroke-width="11" opacity=".9"/>
+        </g>
+      </g>
+
+      <g id="foreground">
+        <path d="M0 1850Q520 1660 1020 1850T2050 1835T3040 1828T3840 1760V2160H0Z" fill="#160d24" opacity=".78"/>
+        <path d="M0 1995Q630 1830 1200 1990T2360 1975T3840 1885V2160H0Z" fill="#110a1d"/>
+        <g opacity=".82">
+          <g transform="translate(560 1990) scale(.8)"><use href="#lotus"/></g>
+          <g transform="translate(1010 2070) scale(.54)"><use href="#lotus"/></g>
+          <g transform="translate(3260 1980) scale(.82)"><use href="#lotus"/></g>
+          <g transform="translate(2820 2070) scale(.55)"><use href="#lotus"/></g>
+        </g>
+        <path d="M115 2160Q390 1940 680 2160M3160 2160Q3450 1930 3740 2160" fill="none" stroke="#d7a747" stroke-width="9" opacity=".56"/>
+        <g fill="#f2c56b" opacity=".86">
+          <circle cx="885" cy="1880" r="7"/><circle cx="2965" cy="1870" r="7"/>
+          <circle cx="735" cy="2050" r="5"/><circle cx="3110" cy="2040" r="5"/>
+        </g>
+      </g>
+    </svg>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">ଶ</span><span>Sacred skies · Puri, Odisha</span></div>
+      <div class="top-actions">
+        <button class="icon-button" id="fullscreenButton" type="button" aria-label="Enter fullscreen" title="Toggle fullscreen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg>
+        </button>
+        <button class="download-button" id="downloadButton" type="button" title="Download the wallpaper at 3840 by 2160 pixels">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg>
+          <span>Download 4K</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="center-copy">
+      <span class="eyebrow">The Lord of the Universe</span>
+      <h1>JAYA JAGANNATH</h1>
+      <p class="subheading">A MOMENT OF STILLNESS · AN ETERNAL PRESENCE</p>
+    </div>
+
+    <footer class="bottom-bar">
+      <div class="caption">
+        <p class="caption-kicker">From the heart of Puri</p>
+        <p>May every road lead you home.</p>
+      </div>
+      <div class="controls" aria-label="Wallpaper controls">
+        <span class="control-label">Experience</span>
+        <span class="control-divider" aria-hidden="true"></span>
+        <button class="toggle-button" id="motionButton" type="button" aria-pressed="true" aria-label="Turn parallax motion off">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.48 8.48 2.12 2.12m0-12.72-2.12 2.12m-8.48 8.48-2.12 2.12"/><circle cx="12" cy="12" r="4"/></svg>
+          <span>Motion</span>
+        </button>
+        <button class="toggle-button" id="glowButton" type="button" aria-pressed="false" aria-label="Turn divine glow on">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v3m0 14v3M4.93 4.93l2.12 2.12m9.9 9.9 2.12 2.12M2 12h3m14 0h3m-17.07 7.07 2.12-2.12m9.9-9.9 2.12-2.12"/><circle cx="12" cy="12" r="4"/></svg>
+          <span>Glow</span>
+        </button>
+      </div>
+    </footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <span class="sr-only" id="screenReaderStatus" aria-live="polite"></span>
+  </main>
+
+  <script>
+    const artwork = document.querySelector("#wallpaperArt");
+    const motionButton = document.querySelector("#motionButton");
+    const glowButton = document.querySelector("#glowButton");
+    const fullscreenButton = document.querySelector("#fullscreenButton");
+    const downloadButton = document.querySelector("#downloadButton");
+    const toast = document.querySelector("#toast");
+    const screenReaderStatus = document.querySelector("#screenReaderStatus");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let motionEnabled = !reducedMotion.matches;
+    let toastTimer;
+
+    function announce(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      screenReaderStatus.textContent = message;
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function setMotion(enabled) {
+      motionEnabled = enabled;
+      motionButton.setAttribute("aria-pressed", String(enabled));
+      motionButton.setAttribute("aria-label", `Turn parallax motion ${enabled ? "off" : "on"}`);
+      if (!enabled) artwork.style.transform = "";
+      announce(`Parallax motion ${enabled ? "on" : "off"}`);
+    }
+
+    motionButton.addEventListener("click", () => setMotion(!motionEnabled));
+    window.addEventListener("pointermove", (event) => {
+      if (!motionEnabled || event.pointerType === "touch") return;
+      const x = (event.clientX / window.innerWidth - .5) * -12;
+      const y = (event.clientY / window.innerHeight - .5) * -8;
+      artwork.style.transform = `translate3d(${x}px, ${y}px, 0) scale(1.015)`;
+    }, { passive: true });
+    window.addEventListener("pointerleave", () => {
+      if (motionEnabled) artwork.style.transform = "";
+    });
+
+    glowButton.addEventListener("click", () => {
+      const enabled = glowButton.getAttribute("aria-pressed") !== "true";
+      glowButton.setAttribute("aria-pressed", String(enabled));
+      glowButton.setAttribute("aria-label", `Turn divine glow ${enabled ? "off" : "on"}`);
+      artwork.style.filter = enabled ? "brightness(1.12) saturate(1.1)" : "";
+      announce(`Divine glow ${enabled ? "on" : "off"}`);
+    });
+
+    fullscreenButton.addEventListener("click", async () => {
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        } else {
+          await document.querySelector(".wallpaper").requestFullscreen();
+        }
+      } catch (error) {
+        announce("Fullscreen is unavailable in this browser.");
+      }
+    });
+
+    document.addEventListener("fullscreenchange", () => {
+      const isFullscreen = Boolean(document.fullscreenElement);
+      fullscreenButton.setAttribute("aria-label", isFullscreen ? "Exit fullscreen" : "Enter fullscreen");
+      screenReaderStatus.textContent = isFullscreen ? "Entered fullscreen" : "Exited fullscreen";
+    });
+
+    downloadButton.addEventListener("click", async () => {
+      downloadButton.disabled = true;
+      downloadButton.setAttribute("aria-busy", "true");
+      try {
+        const svgSource = new XMLSerializer().serializeToString(artwork);
+        const svgBlob = new Blob([svgSource], { type: "image/svg+xml;charset=utf-8" });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const image = new Image();
+        image.src = svgUrl;
+        await image.decode();
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 3840;
+        canvas.height = 2160;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Canvas is unavailable");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(svgUrl);
+
+        const pngBlob = await new Promise((resolve, reject) => {
+          canvas.toBlob((result) => result ? resolve(result) : reject(new Error("PNG export failed")), "image/png");
+        });
+        const downloadUrl = URL.createObjectURL(pngBlob);
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = "jaya-jagannath-4k.png";
+        link.click();
+        window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+        announce("Your 4K wallpaper is ready.");
+      } catch (error) {
+        console.error("Could not export the 4K wallpaper.", error);
+        announce("The 4K download failed. Please try again.");
+      } finally {
+        downloadButton.disabled = false;
+        downloadButton.removeAttribute("aria-busy");
+      }
+    });
+  </script>
+</body>
+</html>
